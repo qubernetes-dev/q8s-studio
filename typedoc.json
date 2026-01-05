@@ -1,0 +1,15 @@
+{
+  "excludeNotDocumented": false,
+  "alwaysCreateEntryPointModule": false,
+  "entryPointStrategy": "expand",
+  "entryPoints": ["./src"],
+  "out": "./docs",
+  "navigation": {
+      "includeCategories": true,
+      "includeGroups": false,
+      "includeFolders": true,
+      "compactFolders": false,
+      "excludeReferences": true
+  },
+  "categorizeByGroup": false,
+}

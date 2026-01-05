@@ -83,7 +83,6 @@ export const useAppNavigation = () => {
 /**
  * Navigation provider component
  *
- * @export
  * @param {{ children: ReactNode }} param0
  * @param {ReactNode} param0.children
  */
@@ -109,3 +108,4 @@ export function NavigationProvider({ children }: { children: ReactNode }) {
   );
 }
 export default { ConsoleProvider, NavigationProvider };
+export type { ConsoleContextProps, NavigationContextProps };

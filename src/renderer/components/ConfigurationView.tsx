@@ -7,7 +7,7 @@ export type SaveFormat = {
   directoryPath: string;
 };
 
-interface ConfigurationViewProps {
+export interface ConfigurationViewProps {
   onClose: () => void;
 }
 /**

@@ -1,6 +1,6 @@
 import React from 'react';
 
-interface fileButtonProps {
+export interface fileButtonProps {
   name: string;
   path: string;
   isDirectory?: boolean;

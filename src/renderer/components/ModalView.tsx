@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import xIcon from '../../../assets/icons/closeX.svg';
 // import './ModalWindow.css';
 
-interface ModalWindowProps {
+export interface ModalWindowProps {
   children: ReactNode;
   onClose: () => void;
 }

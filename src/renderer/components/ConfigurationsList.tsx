@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ConfigurationTile from './ConfigurationTile';
 import { SaveFormat } from './ConfigurationView';
 
-interface ConfigListProps {
+export interface ConfigListProps {
   children: React.JSX.Element;
   refresh: boolean;
 }

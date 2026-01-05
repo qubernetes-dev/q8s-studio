@@ -9,7 +9,7 @@ import { SaveFormat } from '../renderer/components/ConfigurationView';
  * @see https://www.electronjs.org/docs/latest/api/ipc-renderer
  * @see https://www.electronjs.org/docs/latest/api/ipc-main
  */
-const electronAPI = {
+export const electronAPI = {
   writeFile: (fileName: string, content: object) =>
     ipcRenderer.invoke('writeFile', fileName, content),
   deleteFile: (fileName: string) => ipcRenderer.invoke('deleteFile', fileName),

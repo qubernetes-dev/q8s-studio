@@ -6,7 +6,7 @@ import deleteIcon from '../../../assets/icons/delete.svg';
 import { SaveFormat } from './ConfigurationView';
 import { useAppNavigation } from '../contexts/ConsoleContext';
 
-interface ConfigurationTileProps {
+export interface ConfigurationTileProps {
   config: SaveFormat;
   refreshConfigsList: () => Promise<void>;
 }

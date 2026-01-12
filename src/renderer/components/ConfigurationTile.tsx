@@ -3,11 +3,11 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import runIcon from '../../../assets/icons/run.svg';
 import deleteIcon from '../../../assets/icons/delete.svg';
-import { SaveFormat } from './ConfigurationView';
+import { Q8ProjectProperties } from './ConfigurationView';
 import { useAppNavigation } from '../contexts/ConsoleContext';
 
 export interface ConfigurationTileProps {
-  config: SaveFormat;
+  config: Q8ProjectProperties;
   refreshConfigsList: () => Promise<void>;
 }
 /**
@@ -17,7 +17,7 @@ export default function ConfigurationTile({
   config,
   refreshConfigsList,
 }: ConfigurationTileProps): React.JSX.Element {
-  const { configurationName } = config;
+  const { projectName: configurationName } = config;
   const { setNavState, setEnvName } = useAppNavigation();
   const navigate = useNavigate();
   return (

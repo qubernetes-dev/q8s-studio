@@ -1,0 +1,26 @@
+{
+  "name": {
+    "full": "Project name",
+    "short": "Name"
+  },
+  "pythonEnv": {
+    "full": "Python environment",
+    "short": "Env"
+  },
+  "target": {
+    "full": "Select the target hardware for your Q8S project. Choose CPU for standard processing, GPU for accelerated computing, or QPU for quantum processing units. Ensure your environment is set up to support the selected target.",
+    "short": "Target"
+  },
+  "dockerUsername": {
+    "full": "Docker registry username",
+    "short": "Docker User"
+  },
+  "kubernetesConfig": {
+    "full": "Kubernetes configuration",
+    "short": "K8s Config"
+  },
+  "workspacePath": {
+    "full": "Workspace path",
+    "short": "Path"
+  }
+}

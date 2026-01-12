@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ConfigurationTile from './ConfigurationTile';
-import { SaveFormat } from './ConfigurationView';
+import { Q8SProject } from './ConfigurationView';
 
 export interface ConfigListProps {
   children: React.JSX.Element;
@@ -8,7 +8,7 @@ export interface ConfigListProps {
 }
 
 function ConfigurationsList({ children, refresh }: ConfigListProps) {
-  const [configurations, setConfigurations] = useState<SaveFormat[]>([]);
+  const [configurations, setConfigurations] = useState<Q8SProject[]>([]);
 
   const loadFiles = async () => {
     try {
@@ -43,10 +43,10 @@ function ConfigurationsList({ children, refresh }: ConfigListProps) {
           : 'Create a new configuration:'}
       </h2>
       <div className="conf-list">
-        {configurations.map((config: SaveFormat) => (
+        {configurations.map((config: Q8ProjectProperties) => (
           <ConfigurationTile
             config={config}
-            key={config.configurationName}
+            key={config.projectName}
             refreshConfigsList={loadFiles}
           />
         ))}

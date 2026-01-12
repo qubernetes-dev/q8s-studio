@@ -14,12 +14,6 @@
   overflow-y: auto;
   width: 100vw;
   height: 100vh;
-  /* background: linear-gradient(
-    200.96deg,
-    #fedc2a -29.09%,
-    #dd5789 51.77%,
-    #7a2c9e 129.35%
-  ); */
 }
 
 body {
@@ -74,8 +68,8 @@ footer {
 
 .content {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  flex-direction: row;
+  justify-content: space-evenly;
   align-items: center;
   height: 100%;
   row-gap: 2em;
@@ -84,9 +78,23 @@ footer {
     margin: 0;
   }
 
-  > div {
+}
+
+.project-preview{
+  max-height: 80%;
+  min-width: 20%;
+  overflow: auto;
+  padding: 1em;
+  margin: 0em 1em 1em 1em;
+  padding: 0em 1em 1em 1em;
+  border: 2px dashed gray;
+  border-radius: 10px;
+  background-color: #f5f5f5;
+
+  pre {
     margin: 0;
     padding: 0;
+    font-size: 1rem;
   }
 }
 
@@ -255,10 +263,24 @@ a:hover {
   max-height: 75vh;
 }
 
+.inputs {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
 .create-plus {
   border-radius: 100%;
   padding: 1em;
   font-size: x-large;
+  height: 30px;
+  width: 30px;
+}
+.input-info {
+  border-radius: 100%;
+  padding: 0.75em;
+  margin-left: 0.5em;
+  font-size: large;
   height: 30px;
   width: 30px;
 }
@@ -295,6 +317,12 @@ a:hover {
   display: flex;
   justify-content: center;
   align-items: center;
+
+  .modal-title {
+    text-align: center;
+    margin: 0;
+    margin-top: 0.5em;
+  }
 
   > div {
     padding: 1em;

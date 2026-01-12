@@ -28,7 +28,7 @@ import fs from 'fs';
 import portscanner from 'portscanner';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
-import { SaveFormat } from '../renderer/components/ConfigurationView';
+import { Q8ProjectProperties } from '../renderer/components/ConfigurationView';
 
 let mainWindow: BrowserWindow | null = null;
 const allChildProcessess: number[] = [];
@@ -459,12 +459,12 @@ ipcMain.handle('getPort', () =>
 
 ipcMain.handle(
   'runCommand',
-  async (_event, givenConfigurations: SaveFormat) => {
+  async (_event, givenConfigurations: Q8ProjectProperties) => {
     const command = 'docker';
     // Change configuration name to a valid docker name
 
     const containerName = renameContainerName(
-      givenConfigurations.configurationName,
+      givenConfigurations.projectName,
     );
     const availablePort = await portscanner.findAPortNotInUse(
       8888,

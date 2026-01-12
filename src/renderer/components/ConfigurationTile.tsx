@@ -3,11 +3,11 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import runIcon from '../../../assets/icons/run.svg';
 import deleteIcon from '../../../assets/icons/delete.svg';
-import { Q8ProjectProperties } from './ConfigurationView';
+import { Q8SProject } from './ConfigurationView';
 import { useAppNavigation } from '../contexts/ConsoleContext';
 
 export interface ConfigurationTileProps {
-  config: Q8ProjectProperties;
+  config: Q8SProject;
   refreshConfigsList: () => Promise<void>;
 }
 /**
@@ -17,7 +17,7 @@ export default function ConfigurationTile({
   config,
   refreshConfigsList,
 }: ConfigurationTileProps): React.JSX.Element {
-  const { projectName: configurationName } = config;
+  const { name: projectName } = config;
   const { setNavState, setEnvName } = useAppNavigation();
   const navigate = useNavigate();
   return (
@@ -37,7 +37,7 @@ export default function ConfigurationTile({
             });
           navigate('/clg');
           setNavState('environment');
-          setEnvName(configurationName);
+          setEnvName(projectName);
           window.electronAPI
             .runCommand(config, portToUse.toString())
             .then((result: any) => {
@@ -46,14 +46,14 @@ export default function ConfigurationTile({
             .catch(() => {});
         }}
       >
-        <span> {configurationName}</span> <img src={runIcon} alt="" />
+        <span> {projectName}</span> <img src={runIcon} alt="" />
       </button>
       <button
         className="del-btn"
         type="button"
         onClick={() => {
           window.electronAPI
-            .deleteFile(configurationName)
+            .deleteFile(projectName)
             .then((result) => {
               // TODO: refresh list
               refreshConfigsList();

@@ -1,7 +1,7 @@
 // Disable no-unused-vars, broken for spread args
 /* eslint no-unused-vars: off */
 import { IpcRendererEvent, contextBridge, ipcRenderer } from 'electron';
-import { SaveFormat } from '../renderer/components/ConfigurationView';
+import { Q8SProject } from '../renderer/components/ConfigurationView';
 
 /**
  * API exposed to the renderer process
@@ -13,7 +13,7 @@ export const electronAPI = {
   writeFile: (fileName: string, content: object) =>
     ipcRenderer.invoke('writeFile', fileName, content),
   deleteFile: (fileName: string) => ipcRenderer.invoke('deleteFile', fileName),
-  loadFiles: (): Promise<SaveFormat[]> => {
+  loadFiles: (): Promise<Q8SProject[]> => {
     return ipcRenderer.invoke('loadFiles');
   },
   /**
@@ -29,7 +29,7 @@ export const electronAPI = {
    * @param configurations the command to run
    * @returns the output of the command
    */
-  runCommand: (configurations: SaveFormat | null, port: string) => {
+  runCommand: (configurations: Q8SProject | null, port: string) => {
     return ipcRenderer.invoke('runCommand', configurations, port);
   },
   /**

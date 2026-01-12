@@ -43,10 +43,10 @@ function ConfigurationsList({ children, refresh }: ConfigListProps) {
           : 'Create a new configuration:'}
       </h2>
       <div className="conf-list">
-        {configurations.map((config: Q8ProjectProperties) => (
+        {configurations.map((config: Q8SProject) => (
           <ConfigurationTile
             config={config}
-            key={config.projectName}
+            key={config.name}
             refreshConfigsList={loadFiles}
           />
         ))}

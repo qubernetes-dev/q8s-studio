@@ -39,6 +39,7 @@ export type Q8SProject = {
   targets: Q8STargets;
   docker: Q8SDocker;
   kubeconfig: string;
+  workspacePath: string;
 };
 
 export interface ConfigurationViewProps {
@@ -56,13 +57,11 @@ export default function ConfigurationView({ onClose }: ConfigurationViewProps) {
     targets: {},
     docker: { username: '' },
     kubeconfig: '',
+    workspacePath: '',
   });
 
   const [kubeconfigName, setKubeconfigName] = useState('');
-  const [kubeconfigPath, setKubeconfigPath] = useState('');
   const [directoryName, setDirectoryName] = useState('');
-  const [directoryPath, setDirectoryPath] = useState('');
-  const [configurationName, setConfigurationName] = useState('');
   const [error, setError] = useState('');
   const commandRef = useRef<string>('');
 
@@ -83,20 +82,29 @@ export default function ConfigurationView({ onClose }: ConfigurationViewProps) {
       const pathArray = filePath.split(regex);
       const name = pathArray[pathArray.length - 1];
       if (isDirectory) {
+        setQ8sproject({
+          ...q8sproject,
+          workspacePath: filePath,
+        });
         setDirectoryName(name);
-        setDirectoryPath(filePath);
       } else {
+        setQ8sproject({
+          ...q8sproject,
+          kubeconfig: filePath,
+        });
         setKubeconfigName(name);
-        setKubeconfigPath(filePath);
-        if (!configurationName) {
-          setConfigurationName(name);
+        if (!q8sproject.name) {
+          setQ8sproject({
+            ...q8sproject,
+            name,
+          });
         }
       }
     }
   };
-  // Genetare the command to run when configuration file and workspace folder have been selected.
-  if (kubeconfigPath && directoryPath) {
-    commandRef.current = `docker run --rm --name q8studio -p 8888:8888 -v ${kubeconfigPath}:/home/jupyter/.kube/config -v ${directoryPath}:/workspace --pull always ghcr.io/torqs-project/q8s-devenv:main`;
+  // Generate the command to run when configuration file and workspace folder have been selected.
+  if (q8sproject.kubeconfig && q8sproject.workspacePath) {
+    commandRef.current = `docker run --rm --name q8studio -p 8888:8888 -v ${q8sproject.kubeconfig}:/home/jupyter/.kube/config -v ${q8sproject.workspacePath}:/workspace --pull always ghcr.io/torqs-project/q8s-devenv:main`;
   }
   return (
     <div>
@@ -175,14 +183,14 @@ export default function ConfigurationView({ onClose }: ConfigurationViewProps) {
 
             <FileButton
               name={kubeconfigName}
-              path={kubeconfigPath}
+              path={q8sproject.kubeconfig}
               openDialog={openDialog}
               documentationText={documentationTexts.kubernetesConfig.full}
               shortDescription={documentationTexts.kubernetesConfig.short}
             />
             <FileButton
               name={directoryName}
-              path={directoryPath}
+              path={q8sproject.workspacePath}
               isDirectory
               openDialog={openDialog}
               documentationText={documentationTexts.workspacePath.full}
@@ -201,14 +209,15 @@ export default function ConfigurationView({ onClose }: ConfigurationViewProps) {
             className="save-button"
             onClick={() => {
               const objectToSave: Q8SProject = {
-                name: configurationName,
+                name: q8sproject.name,
                 pythonEnv: q8sproject.pythonEnv,
                 targets: q8sproject.targets,
                 docker: q8sproject.docker,
-                kubeconfig: kubeconfigPath,
+                kubeconfig: q8sproject.kubeconfig,
+                workspacePath: q8sproject.workspacePath,
               };
               window.electronAPI
-                .writeFile(configurationName, objectToSave)
+                .writeFile(q8sproject.name, objectToSave)
                 .then((isSaved) => {
                   if (isSaved) {
                     onClose();

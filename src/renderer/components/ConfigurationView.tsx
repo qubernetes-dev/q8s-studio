@@ -128,7 +128,7 @@ export default function ConfigurationView({ onClose }: ConfigurationViewProps) {
                 pythonEnv: {
                   dependencies: e.target.value
                     .split(',')
-                    .map((dep) => dep.trim()),
+                    .map((dep: string) => dep.trim()),
                 },
               });
             }}
@@ -136,8 +136,15 @@ export default function ConfigurationView({ onClose }: ConfigurationViewProps) {
           <TextField
             label="Docker Username"
             fieldValue={q8sproject.docker.username}
-            inputName="dockerUsername"
-            handleChange={handleChange}
+            inputName="docker"
+            handleChange={(e) => {
+              setQ8sproject({
+                ...q8sproject,
+                docker: {
+                  username: e.target.value,
+                },
+              });
+            }}
             documentationText={documentationTexts.dockerUsername.full}
             shortDescription={documentationTexts.dockerUsername.short}
             pattern="^/?([a-zA-Z0-9_ ]+)$" // Pattern to allow letters, spaces and underscores only

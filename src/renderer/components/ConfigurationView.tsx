@@ -1,4 +1,5 @@
 import { useState, useRef, DOMElement, InputHTMLAttributes } from 'react';
+import yaml from 'js-yaml';
 import FileButton from './FileButton';
 import TextField from './TextField';
 import InfoButton from './InfoButton';
@@ -94,6 +95,7 @@ export default function ConfigurationView({ onClose }: ConfigurationViewProps) {
         });
         setKubeconfigName(name);
         if (!q8sproject.name) {
+          setKubeconfigName(name);
           setQ8sproject({
             ...q8sproject,
             name,
@@ -199,7 +201,7 @@ export default function ConfigurationView({ onClose }: ConfigurationViewProps) {
           </div>
           <div className="project-preview">
             <h3>Q8SProject Preview</h3>
-            <pre>{JSON.stringify(q8sproject, null, 2)}</pre>
+            <pre>{yaml.dump(q8sproject)}</pre>
           </div>
         </div>
 

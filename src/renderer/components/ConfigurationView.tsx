@@ -104,91 +104,98 @@ export default function ConfigurationView({ onClose }: ConfigurationViewProps) {
         {q8sproject.name ? q8sproject.name : 'New Q8SProject'}
       </h2>
       <div className="content">
-        <div className="inputs">
-          <TextField
-            label="Name"
-            fieldValue={q8sproject.name}
-            autofocus
-            inputName="name"
-            handleChange={handleChange}
-            documentationText={documentationTexts.name.full}
-            shortDescription={documentationTexts.name.short}
-            pattern="^/?([a-zA-Z0-9_ ]+)$" // Pattern to allow letters, spaces and underscores only
-            validationMessage="Name can only contain letters from A-Z,spaces and underscores."
-          />
-          <TextField
-            label="Python Dependencies"
-            fieldValue={q8sproject.pythonEnv.dependencies.join(', ')}
-            inputName="pythonDependencies"
-            documentationText={documentationTexts.pythonEnv.full}
-            shortDescription={documentationTexts.pythonEnv.short}
-            handleChange={(e) => {
-              setQ8sproject({
-                ...q8sproject,
-                pythonEnv: {
-                  dependencies: e.target.value
-                    .split(',')
-                    .map((dep: string) => dep.trim()),
-                },
-              });
-            }}
-          />
-          <TextField
-            label="Docker Username"
-            fieldValue={q8sproject.docker.username}
-            inputName="docker"
-            handleChange={(e) => {
-              setQ8sproject({
-                ...q8sproject,
-                docker: {
-                  username: e.target.value,
-                },
-              });
-            }}
-            documentationText={documentationTexts.dockerUsername.full}
-            shortDescription={documentationTexts.dockerUsername.short}
-            pattern="^/?([a-zA-Z0-9_ ]+)$" // Pattern to allow letters, spaces and underscores only
-            validationMessage="Name can only contain letters from A-Z,spaces and underscores."
-          />
-          <div className="input-div">
-            <label className="text-input" htmlFor="targets">
-              <span>Target</span>
-              <select name="targets" id="targets" onChange={handleChange}>
-                <option selected={q8sproject.targets.cpu ? true : false}>CPU</option>
-                <option selected={q8sproject.targets.gpu ? true : false}>GPU</option>
-                <option selected={q8sproject.targets.qpu ? true : false}>QPU</option>
-              </select>
-            </label>
+        <div className="conf-view">
+          <div className="inputs">
+            <TextField
+              label="Name"
+              fieldValue={q8sproject.name}
+              autofocus
+              inputName="name"
+              handleChange={handleChange}
+              documentationText={documentationTexts.name.full}
+              shortDescription={documentationTexts.name.short}
+              pattern="^/?([a-zA-Z0-9_ ]+)$" // Pattern to allow letters, spaces and underscores only
+              validationMessage="Name can only contain letters from A-Z,spaces and underscores."
+            />
+            <TextField
+              label="Python Dependencies"
+              fieldValue={q8sproject.pythonEnv.dependencies.join(', ')}
+              inputName="pythonDependencies"
+              documentationText={documentationTexts.pythonEnv.full}
+              shortDescription={documentationTexts.pythonEnv.short}
+              handleChange={(e) => {
+                setQ8sproject({
+                  ...q8sproject,
+                  pythonEnv: {
+                    dependencies: e.target.value
+                      .split(',')
+                      .map((dep: string) => dep.trim()),
+                  },
+                });
+              }}
+            />
+            <TextField
+              label="Docker Username"
+              fieldValue={q8sproject.docker.username}
+              inputName="docker"
+              handleChange={(e) => {
+                setQ8sproject({
+                  ...q8sproject,
+                  docker: {
+                    username: e.target.value,
+                  },
+                });
+              }}
+              documentationText={documentationTexts.dockerUsername.full}
+              shortDescription={documentationTexts.dockerUsername.short}
+              pattern="^/?([a-zA-Z0-9_ ]+)$" // Pattern to allow letters, spaces and underscores only
+              validationMessage="Name can only contain letters from A-Z,spaces and underscores."
+            />
+            <div className="input-div">
+              <label className="text-input" htmlFor="targets">
+                <span>Target</span>
+                <select name="targets" id="targets" onChange={handleChange}>
+                  <option selected={q8sproject.targets.cpu ? true : false}>
+                    CPU
+                  </option>
+                  <option selected={q8sproject.targets.gpu ? true : false}>
+                    GPU
+                  </option>
+                  <option selected={q8sproject.targets.qpu ? true : false}>
+                    QPU
+                  </option>
+                </select>
+              </label>
 
-            <InfoButton
-              documentationText={documentationTexts.target.full}
-              shortDescription={documentationTexts.target.short}
+              <InfoButton
+                documentationText={documentationTexts.target.full}
+                shortDescription={documentationTexts.target.short}
+              />
+            </div>
+
+            <FileButton
+              name={kubeconfigName}
+              path={kubeconfigPath}
+              openDialog={openDialog}
+              documentationText={documentationTexts.kubernetesConfig.full}
+              shortDescription={documentationTexts.kubernetesConfig.short}
+            />
+            <FileButton
+              name={directoryName}
+              path={directoryPath}
+              isDirectory
+              openDialog={openDialog}
+              documentationText={documentationTexts.workspacePath.full}
+              shortDescription={documentationTexts.workspacePath.short}
             />
           </div>
+          <div className="project-preview">
+            <h3>Q8SProject Preview</h3>
+            <pre>{JSON.stringify(q8sproject, null, 2)}</pre>
+          </div>
+        </div>
 
-          <FileButton
-            name={kubeconfigName}
-            path={kubeconfigPath}
-            openDialog={openDialog}
-            documentationText={documentationTexts.kubernetesConfig.full}
-            shortDescription={documentationTexts.kubernetesConfig.short}
-          />
-          <FileButton
-            name={directoryName}
-            path={directoryPath}
-            isDirectory
-            openDialog={openDialog}
-            documentationText={documentationTexts.workspacePath.full}
-            shortDescription={documentationTexts.workspacePath.short}
-          />
-        </div>
-        <div className="project-preview">
-          <h3>Q8SProject Preview</h3>
-          <pre>{JSON.stringify(q8sproject, null, 2)}</pre>
-        </div>
-      </div>
-      {commandRef.current && !error ? (
-        <div className="file">
+        {commandRef.current && !error ? (
           <button
             type="button"
             className="save-button"
@@ -242,10 +249,10 @@ export default function ConfigurationView({ onClose }: ConfigurationViewProps) {
             </svg>
             Save configuration
           </button>
-        </div>
-      ) : (
-        ''
-      )}
+        ) : (
+          ''
+        )}
+      </div>
     </div>
   );
 }

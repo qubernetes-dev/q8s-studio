@@ -154,9 +154,9 @@ export default function ConfigurationView({ onClose }: ConfigurationViewProps) {
             <label className="text-input" htmlFor="targets">
               <span>Target</span>
               <select name="targets" id="targets" onChange={handleChange}>
-                <option value={q8sproject.targets.cpu ? 'cpu' : ''}>CPU</option>
-                <option value={q8sproject.targets.gpu ? 'gpu' : ''}>GPU</option>
-                <option value={q8sproject.targets.qpu ? 'qpu' : ''}>QPU</option>
+                <option selected={q8sproject.targets.cpu ? true : false}>CPU</option>
+                <option selected={q8sproject.targets.gpu ? true : false}>GPU</option>
+                <option selected={q8sproject.targets.qpu ? true : false}>QPU</option>
               </select>
             </label>
 

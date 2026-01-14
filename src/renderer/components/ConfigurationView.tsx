@@ -1,4 +1,4 @@
-import { useState, useRef, DOMElement, InputHTMLAttributes } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import yaml from 'js-yaml';
 import FileButton from './FileButton';
 import TextField from './TextField';
@@ -45,13 +45,17 @@ export type Q8SProject = {
 
 export interface ConfigurationViewProps {
   onClose: () => void;
+  configToEdit: Q8SProject | undefined;
 }
 
 /**
  * The configuration view.
  * Handles file and directory states and renders the configuration view.
  */
-export default function ConfigurationView({ onClose }: ConfigurationViewProps) {
+export default function ConfigurationView({
+  onClose,
+  configToEdit,
+}: ConfigurationViewProps) {
   const [q8sproject, setQ8sproject] = useState<Q8SProject>({
     name: '',
     pythonEnv: { dependencies: [] },
@@ -65,6 +69,12 @@ export default function ConfigurationView({ onClose }: ConfigurationViewProps) {
   const [directoryName, setDirectoryName] = useState('');
   const [error, setError] = useState('');
   const commandRef = useRef<string>('');
+
+  useEffect(() => {
+    if (configToEdit) {
+      setQ8sproject(configToEdit);
+    }
+  }, [configToEdit]);
 
   const handleChange = (e) => {
     setQ8sproject({
@@ -218,6 +228,20 @@ export default function ConfigurationView({ onClose }: ConfigurationViewProps) {
                 kubeconfig: q8sproject.kubeconfig,
                 workspacePath: q8sproject.workspacePath,
               };
+              if (configToEdit) {
+                window.electronAPI
+                  .renameFile(configToEdit?.name, q8sproject.name)
+                  .then((isRenamed) => {
+                    if (isRenamed) {
+                      return isRenamed;
+                    }
+                    throw new Error('Error renaming file');
+                  })
+                  .catch((err) => {
+                    // eslint-disable-next-line no-console
+                    console.log(err);
+                  });
+              }
               window.electronAPI
                 .writeFile(q8sproject.name, objectToSave)
                 .then((isSaved) => {

@@ -312,6 +312,30 @@ async function writeFile(fileName: string, content: object) {
 }
 
 /**
+ * Renames a file in the user's appData directory.
+ *
+ * @async
+ * @param {string} oldFileName The name of the file to rename
+ * @param {string} newFileName The new name of the file
+ * @returns {boolean} A Boolean value which indicates if the file was renamed successfully
+ */
+async function renameFile(oldFileName: string, newFileName: string): Promise<boolean> {
+  let oldFilePath;
+  let filePath;
+  try {
+    oldFilePath = path.join(app.getPath('userData'), configFileDirName, oldFileName);
+    filePath = path.join(app.getPath('userData'), configFileDirName, newFileName);
+    fs.renameSync(oldFilePath, filePath); // Throws an error
+    return true;
+  } catch (error) {
+    dialog.showMessageBox(mainWindow!, {
+      message: `Error renaming file. \n Error message:\n${error} \n ${oldFilePath} to ${filePath}`,
+    });
+    return false;
+  }
+}
+
+/**
  * Delete a file from the user's appData directory.
  * @async Waits for the file to be deleted and waits for the dialog to be closed
  * @param {string} fileName The name of the file to delete
@@ -417,6 +441,9 @@ function killAllProcessess(processes: number[], containerName?: string) {
  ----------------------------------------*/
 ipcMain.handle('writeFile', (_event, fileName, content) =>
   writeFile(fileName, content),
+);
+ipcMain.handle('renameFile', (_event, fileToRename, newFileName) =>
+  renameFile(fileToRename, newFileName),
 );
 ipcMain.handle('deleteFile', (_event, fileName) => deleteFile(fileName));
 ipcMain.handle('loadFiles', () => {

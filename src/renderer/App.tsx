@@ -4,6 +4,7 @@ import './App.css';
 import ConsoleView from './components/ConsoleView';
 import BasicLayout from './components/BasicLayout';
 import { ConsoleProvider, NavigationProvider } from './contexts/ConsoleContext';
+import { ModalProvider } from './contexts/ModalContext';
 
 /**
  * Qubernetes Studio App.
@@ -13,10 +14,11 @@ export default function App() {
   return (
     <NavigationProvider>
       <ConsoleProvider>
-        <Router>
-          <Routes>
-            <Route path="/" element={<BasicLayout />}>
-              {/* <Route
+        <ModalProvider>
+          <Router>
+            <Routes>
+              <Route path="/" element={<BasicLayout />}>
+                {/* <Route
               path="/"
               element={
                 <ConfigurationView
@@ -29,10 +31,11 @@ export default function App() {
                 />
               }
             /> */}
-              <Route path="/clg" element={<ConsoleView />} />
-            </Route>
-          </Routes>
-        </Router>
+                <Route path="/clg" element={<ConsoleView />} />
+              </Route>
+            </Routes>
+          </Router>
+        </ModalProvider>
       </ConsoleProvider>
     </NavigationProvider>
   );

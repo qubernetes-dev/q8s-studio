@@ -10,8 +10,10 @@ import { Q8SProject } from '../renderer/components/ConfigurationView';
  * @see https://www.electronjs.org/docs/latest/api/ipc-main
  */
 export const electronAPI = {
-  writeFile: (fileName: string, content: object) =>
-    ipcRenderer.invoke('writeFile', fileName, content),
+  writeFile: (fileName: string, content: object, oldFileName?: string) =>
+    ipcRenderer.invoke('writeFile', fileName, content, oldFileName),
+  renameFile: (fileToRename: string, newFileName?: string) =>
+    ipcRenderer.invoke('renameFile', fileToRename, newFileName),
   deleteFile: (fileName: string) => ipcRenderer.invoke('deleteFile', fileName),
   loadFiles: (): Promise<Q8SProject[]> => {
     return ipcRenderer.invoke('loadFiles');

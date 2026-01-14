@@ -5,6 +5,7 @@ import runIcon from '../../../assets/icons/run.svg';
 import deleteIcon from '../../../assets/icons/delete.svg';
 import { Q8SProject } from './ConfigurationView';
 import { useAppNavigation } from '../contexts/ConsoleContext';
+import { useModal } from '../contexts/ModalContext';
 
 export interface ConfigurationTileProps {
   config: Q8SProject;
@@ -20,6 +21,7 @@ export default function ConfigurationTile({
   const { name: projectName } = config;
   const { setNavState, setEnvName } = useAppNavigation();
   const navigate = useNavigate();
+  const { setShowModal, setConfigToEdit } = useModal();
   return (
     <div className="tile-div">
       <button
@@ -47,6 +49,16 @@ export default function ConfigurationTile({
         }}
       >
         <span> {projectName}</span> <img src={runIcon} alt="" />
+      </button>
+      <button
+        className="edit-btn"
+        type="button"
+        onClick={() => {
+          setShowModal('config');
+          setConfigToEdit?.(config);
+        }}
+      >
+        <span>edit</span>
       </button>
       <button
         className="del-btn"

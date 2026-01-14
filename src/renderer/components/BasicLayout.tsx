@@ -4,12 +4,13 @@ import ModalWindow from './ModalView';
 import ConfigurationView from './ConfigurationView';
 import ConfigurationsList from './ConfigurationsList';
 import { useAppNavigation } from '../contexts/ConsoleContext';
+import { useModal } from '../contexts/ModalContext';
 /**
  * A layout component that contains the top and bottom footers for the app.
  */
 function BasicLayout() {
   const navigate = useNavigate();
-  const [showModal, setShowModal] = useState('');
+  const { showModal, setShowModal, configToEdit, setConfigToEdit } = useModal();
   const { navState, setNavState } = useAppNavigation();
   const [refreshConfigs, setRefreshConfigs] = useState(false);
   return (
@@ -59,6 +60,7 @@ function BasicLayout() {
               type="button"
               className="create-plus"
               onClick={() => {
+                setConfigToEdit(undefined);
                 setShowModal('config');
               }}
             >
@@ -76,6 +78,7 @@ function BasicLayout() {
                 // Refresh configurationsList
                 setRefreshConfigs(!refreshConfigs);
               }}
+              configToEdit={configToEdit}
             />
           </ModalWindow>
         ) : (

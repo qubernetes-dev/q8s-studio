@@ -21,6 +21,7 @@ import {
   nativeTheme,
 } from 'electron';
 
+import yaml from 'js-yaml';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import { exec, execSync, spawn } from 'child_process';
@@ -28,7 +29,7 @@ import fs from 'fs';
 import portscanner from 'portscanner';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
-import { Q8ProjectProperties } from '../renderer/components/ConfigurationView';
+import { Q8SProject } from '../renderer/components/ConfigurationView';
 
 let mainWindow: BrowserWindow | null = null;
 const allChildProcessess: number[] = [];
@@ -288,17 +289,17 @@ function createEnvManager(
   Local file handling
  ----------------------------------------*/
 /**
- * Write a file to the user's appData directory. Converts the JS object to a JSON string.
+ * Write a file to the user's appData directory. Converts the JS object to YAML string.
  * @param fileName The name of the file to write
- * @param content The content to write to the file as an JS object
+ * @param content The content to write to the file as
  * @returns Boolean value to indicate if writing was successful
  */
 async function writeFile(fileName: string, content: object) {
   let filePath;
   try {
     filePath = path.join(app.getPath('userData'), configFileDirName, fileName);
-    const contentJSON = JSON.stringify(content);
-    fs.writeFileSync(filePath, contentJSON); // Throws an error
+    const contentYaml = yaml.dump(content);
+    fs.writeFileSync(filePath, contentYaml); // Throws an error
     await dialog.showMessageBox(mainWindow!, {
       message: 'File saved successfully',
     });
@@ -373,7 +374,7 @@ async function loadFiles(): Promise<object[]> {
     filesToReturn.forEach((file) => {
       try {
         fileContents.push(
-          JSON.parse(fs.readFileSync(folderPath + file, 'utf8')),
+          yaml.load(fs.readFileSync(folderPath + file, 'utf8')) as object,
         );
       } catch (error) {
         dialog.showErrorBox(
@@ -486,12 +487,12 @@ ipcMain.handle('getPort', () =>
 
 ipcMain.handle(
   'runCommand',
-  async (_event, givenConfigurations: Q8ProjectProperties) => {
+  async (_event, givenConfigurations: Q8SProject) => {
     const command = 'docker';
     // Change configuration name to a valid docker name
 
     const containerName = renameContainerName(
-      givenConfigurations.projectName,
+      givenConfigurations.name,
     );
     const availablePort = await portscanner.findAPortNotInUse(
       8888,
@@ -506,9 +507,9 @@ ipcMain.handle(
       '-p',
       `${availablePort}:8888`,
       '-v',
-      `${givenConfigurations.kubeconfigPath}:/home/jupyter/.kube/config`,
+      `${givenConfigurations.kubeconfig}:/home/jupyter/.kube/config`,
       '-v',
-      `${givenConfigurations.directoryPath}:/workspace`,
+      `${givenConfigurations.workspacePath}:/workspace`,
       '--pull',
       'always',
       'ghcr.io/torqs-project/q8s-devenv:main',

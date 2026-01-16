@@ -15,20 +15,7 @@ export type Q8STarget = {
   python_env: Q8SPythonEnv;
 };
 
-export type Q8STargets = {
-  cpu?: Q8STarget;
-  gpu?: Q8STarget;
-  qpu?: Q8STarget;
-};
-
-/**
- * Helper to get present target keys (cpu/gpu/qpu) from a Q8STargets object.
- */
-export const getTargetKeys = (targets: Q8STargets) => {
-  const keys = ['cpu', 'gpu', 'qpu'] as const;
-  return keys.filter((k): k is (typeof keys)[number] => targets[k] != null);
-};
-
+export type Q8Starget = 'cpu' | 'gpu' | 'qpu';
 export type Q8SDocker = {
   username: string;
   registry?: string;
@@ -37,7 +24,7 @@ export type Q8SDocker = {
 export type Q8SProject = {
   name: string;
   pythonEnv: Q8SPythonEnv;
-  targets: Q8STargets;
+  target: string;
   docker: Q8SDocker;
   kubeconfig: string;
   workspacePath: string;
@@ -59,7 +46,7 @@ export default function ConfigurationView({
   const [q8sproject, setQ8sproject] = useState<Q8SProject>({
     name: '',
     pythonEnv: { dependencies: [] },
-    targets: {},
+    target: '',
     docker: { username: '' },
     kubeconfig: '',
     workspacePath: '',
@@ -172,18 +159,20 @@ export default function ConfigurationView({
               validationMessage="Name can only contain letters from A-Z,spaces and underscores."
             />
             <div className="input-div">
-              <label className="text-input" htmlFor="targets">
+              <label className="text-input" htmlFor="target">
                 <span>Target</span>
-                <select name="targets" id="targets" onChange={handleChange}>
-                  <option selected={q8sproject.targets.cpu ? true : false}>
-                    CPU
-                  </option>
-                  <option selected={q8sproject.targets.gpu ? true : false}>
-                    GPU
-                  </option>
-                  <option selected={q8sproject.targets.qpu ? true : false}>
-                    QPU
-                  </option>
+                {/* About select and option tags in REACT: https://react.dev/reference/react-dom/components/select#providing-an-initially-selected-option */}
+                <select
+                  name="target"
+                  id="target"
+                  onChange={handleChange}
+                  value={q8sproject.target}
+                  required
+                >
+                  <option value="">Select target</option>
+                  <option value="cpu">CPU</option>
+                  <option value="gpu">GPU</option>
+                  <option value="qpu">QPU</option>
                 </select>
               </label>
 
@@ -223,7 +212,7 @@ export default function ConfigurationView({
               const objectToSave: Q8SProject = {
                 name: q8sproject.name,
                 pythonEnv: q8sproject.pythonEnv,
-                targets: q8sproject.targets,
+                target: q8sproject.target,
                 docker: q8sproject.docker,
                 kubeconfig: q8sproject.kubeconfig,
                 workspacePath: q8sproject.workspacePath,

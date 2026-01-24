@@ -171,27 +171,59 @@ export default function ConfigurationView({
               pattern="^/?([a-zA-Z0-9_ ]+)$" // Pattern to allow letters, spaces and underscores only
               validationMessage="Name can only contain letters from A-Z,spaces and underscores."
             />
-            <div className="input-div">
-              <label className="text-input" htmlFor="targets">
-                <span>Target</span>
-                <select name="targets" id="targets" onChange={handleChange}>
-                  <option selected={q8sproject.targets.cpu ? true : false}>
-                    CPU
-                  </option>
-                  <option selected={q8sproject.targets.gpu ? true : false}>
-                    GPU
-                  </option>
-                  <option selected={q8sproject.targets.qpu ? true : false}>
-                    QPU
-                  </option>
-                </select>
-              </label>
+            <TextField
+              label="CPU Python Dependencies"
+              fieldValue={
+                q8sproject.targets.cpu?.python_env?.dependencies?.join(', ') ||
+                ''
+              }
+              inputName="CPUpythonDependencies"
+              documentationText={documentationTexts.pythonEnv.full}
+              shortDescription={documentationTexts.pythonEnv.short}
+              handleChange={(e) => {
+                setQ8sproject({
+                  ...q8sproject,
+                  targets: {
+                    ...q8sproject.targets,
+                    cpu: {
+                      ...q8sproject.targets.cpu,
+                      python_env: {
+                        dependencies: e.target.value
+                          .split(',')
+                          .map((dep: string) => dep.trim()),
+                      },
+                    },
+                  },
+                });
+              }}
+            />
 
-              <InfoButton
-                documentationText={documentationTexts.target.full}
-                shortDescription={documentationTexts.target.short}
-              />
-            </div>
+            <TextField
+              label="GPU Python Dependencies"
+              fieldValue={
+                q8sproject.targets.gpu?.python_env?.dependencies?.join(', ') ||
+                ''
+              }
+              inputName="GPUpythonDependencies"
+              documentationText={documentationTexts.pythonEnv.full}
+              shortDescription={documentationTexts.pythonEnv.short}
+              handleChange={(e) => {
+                setQ8sproject({
+                  ...q8sproject,
+                  targets: {
+                    ...q8sproject.targets,
+                    gpu: {
+                      ...q8sproject.targets.gpu,
+                      python_env: {
+                        dependencies: e.target.value
+                          .split(',')
+                          .map((dep: string) => dep.trim()),
+                      },
+                    },
+                  },
+                });
+              }}
+            />
 
             <FileButton
               name={kubeconfigName}

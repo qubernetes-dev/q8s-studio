@@ -381,6 +381,21 @@ a:hover {
   }
 }
 
+.save-button-disabled {
+  padding: 0.75em 0.75em;
+  /* padding-left: 0.5em; */
+  /* margin-top: 5em; */
+  border-radius: 12px;
+  background-color: rgba(128, 128, 128, 0.76);
+  color: rgba(255, 255, 255, 0.788);
+  cursor: not-allowed;
+
+  svg {
+    margin-right: 0.75em;
+    opacity: 0.8;
+  }
+}
+
 .input-div {
   width: auto;
   cursor: auto;

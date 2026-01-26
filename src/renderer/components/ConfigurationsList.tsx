@@ -9,6 +9,7 @@ export interface ConfigListProps {
 
 function ConfigurationsList({ children, refresh }: ConfigListProps) {
   const [configurations, setConfigurations] = useState<Q8SProject[]>([]);
+  const [error, setError] = useState<string>('');
 
   const loadFiles = async () => {
     try {
@@ -21,14 +22,18 @@ function ConfigurationsList({ children, refresh }: ConfigListProps) {
   };
 
   useEffect(() => {
-    loadFiles()
-      .then((result) => {
-        window.electronAPI.checkDocker();
-        return result;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    const initializeApp = async () => {
+      try {
+        await loadFiles();
+        await window.electronAPI.checkDocker();
+        await window.electronAPI.checkQ8SCtl();
+      } catch (err) {
+        console.error('Initialization failed:', err);
+        setError(err instanceof Error ? err.message : 'Unknown error');
+      }
+    };
+
+    initializeApp();
   }, []);
 
   useEffect(() => {

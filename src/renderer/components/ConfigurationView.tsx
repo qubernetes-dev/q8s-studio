@@ -36,7 +36,7 @@ export type Q8SDocker = {
 
 export type Q8SProject = {
   name: string;
-  pythonEnv: Q8SPythonEnv;
+  python_env: Q8SPythonEnv;
   targets: Q8STargets;
   docker: Q8SDocker;
   kubeconfig: string;
@@ -58,7 +58,7 @@ export default function ConfigurationView({
 }: ConfigurationViewProps) {
   const [q8sproject, setQ8sproject] = useState<Q8SProject>({
     name: '',
-    pythonEnv: { dependencies: [] },
+    python_env: { dependencies: [] },
     targets: {},
     docker: { username: '' },
     kubeconfig: '',
@@ -139,14 +139,14 @@ export default function ConfigurationView({
             />
             <TextField
               label="Python Dependencies"
-              fieldValue={q8sproject.pythonEnv.dependencies.join(', ')}
+              fieldValue={q8sproject.python_env.dependencies.join(', ')}
               inputName="pythonDependencies"
               documentationText={documentationTexts.pythonEnv.full}
               shortDescription={documentationTexts.pythonEnv.short}
               handleChange={(e) => {
                 setQ8sproject({
                   ...q8sproject,
-                  pythonEnv: {
+                  python_env: {
                     dependencies: e.target.value
                       .split(',')
                       .map((dep: string) => dep.trim()),
@@ -251,42 +251,53 @@ export default function ConfigurationView({
           <button
             type="button"
             className="save-button"
-            onClick={() => {
-              const objectToSave: Q8SProject = {
-                name: q8sproject.name,
-                pythonEnv: q8sproject.pythonEnv,
-                targets: q8sproject.targets,
-                docker: q8sproject.docker,
-                kubeconfig: q8sproject.kubeconfig,
-                workspacePath: q8sproject.workspacePath,
-              };
-              if (configToEdit) {
-                window.electronAPI
-                  .renameFile(configToEdit?.name, q8sproject.name)
-                  .then((isRenamed) => {
-                    if (isRenamed) {
-                      return isRenamed;
-                    }
-                    throw new Error('Error renaming file');
-                  })
-                  .catch((err) => {
-                    // eslint-disable-next-line no-console
-                    console.log(err);
-                  });
+            onClick={async () => {
+              try {
+                const objectToSave: Q8SProject = {
+                  name: q8sproject.name,
+                  python_env: q8sproject.python_env,
+                  targets: q8sproject.targets,
+                  docker: q8sproject.docker,
+                  kubeconfig: q8sproject.kubeconfig,
+                  workspacePath: q8sproject.workspacePath,
+                };
+
+                // Step 1: Rename
+                if (configToEdit) {
+                  const isRenamed = await window.electronAPI.renameFile(
+                    configToEdit.name,
+                    q8sproject.name,
+                  );
+                  if (!isRenamed)
+                    throw new Error('Failed to rename configuration');
+                }
+
+                // Step 2: Write to appData
+                const isSaved = await window.electronAPI.writeFile(
+                  q8sproject.name,
+                  objectToSave,
+                );
+                if (!isSaved) throw new Error('Failed to save configuration');
+
+                // Step 3: Write to workspace
+                try {
+                  await window.electronAPI.saveQ8SProjectFile(
+                    q8sproject.workspacePath,
+                    q8sproject.name,
+                    objectToSave,
+                  );
+                } catch (workspaceErr: any) {
+                  setError(
+                    `Failed to save to workspace: ${workspaceErr.message}`,
+                  );
+                  return; // Don't close modal if workspace save fails
+                }
+
+                onClose();
+              } catch (err) {
+                console.error('Error:', err);
+                setError(err instanceof Error ? err.message : 'Unknown error');
               }
-              window.electronAPI
-                .writeFile(q8sproject.name, objectToSave)
-                .then((isSaved) => {
-                  if (isSaved) {
-                    onClose();
-                    return isSaved;
-                  }
-                  throw new Error('Error saving file');
-                })
-                .catch((err) => {
-                  // eslint-disable-next-line no-console
-                  console.log(err);
-                });
             }}
           >
             <svg
@@ -324,7 +335,7 @@ export default function ConfigurationView({
             onClick={() => {
               const objectToSave: Q8SProject = {
                 name: q8sproject.name,
-                pythonEnv: q8sproject.pythonEnv,
+                python_env: q8sproject.python_env,
                 targets: q8sproject.targets,
                 docker: q8sproject.docker,
                 kubeconfig: q8sproject.kubeconfig,
@@ -344,19 +355,6 @@ export default function ConfigurationView({
                     console.log(err);
                   });
               }
-              window.electronAPI
-                .writeFile(q8sproject.name, objectToSave)
-                .then((isSaved) => {
-                  if (isSaved) {
-                    onClose();
-                    return isSaved;
-                  }
-                  throw new Error('Error saving file');
-                })
-                .catch((err) => {
-                  // eslint-disable-next-line no-console
-                  console.log(err);
-                });
             }}
           >
             <svg

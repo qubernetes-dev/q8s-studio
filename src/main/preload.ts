@@ -10,8 +10,14 @@ import { Q8SProject } from '../renderer/components/ConfigurationView';
  * @see https://www.electronjs.org/docs/latest/api/ipc-main
  */
 export const electronAPI = {
+  runQ8S: (args: string[]) => ipcRenderer.invoke('runQ8S', args),
   writeFile: (fileName: string, content: object, oldFileName?: string) =>
     ipcRenderer.invoke('writeFile', fileName, content, oldFileName),
+  saveQ8SProjectFile: (
+    workspacePath: string,
+    fileName: string,
+    content: Q8SProject,
+  ) => ipcRenderer.invoke('saveQ8SProjectFile', workspacePath, fileName, content),
   renameFile: (fileToRename: string, newFileName?: string) =>
     ipcRenderer.invoke('renameFile', fileToRename, newFileName),
   deleteFile: (fileName: string) => ipcRenderer.invoke('deleteFile', fileName),
@@ -27,12 +33,20 @@ export const electronAPI = {
     ipcRenderer.invoke('openFile', isDirectory),
   getPort: () => ipcRenderer.invoke('getPort').then((port) => port as number),
   /**
+   * Runs docker with the given configurations
+   * @param the configurations for the docker command
+   * @returns the output of the command
+   */
+  runDockerCommand: (configurations: Q8SProject | null, port: string) => {
+    return ipcRenderer.invoke('runDockerCommand', configurations, port);
+  },
+  /**
    * Runs the given command in main process as a child process
    * @param configurations the command to run
    * @returns the output of the command
    */
-  runCommand: (configurations: Q8SProject | null, port: string) => {
-    return ipcRenderer.invoke('runCommand', configurations, port);
+  runCommand: (command: string) => {
+    return ipcRenderer.invoke('runCommand', command);
   },
   /**
    * Kill the child process of the environment (docker container) and return the exit message.
@@ -43,6 +57,7 @@ export const electronAPI = {
     return ipcRenderer.invoke('killProcess', containerName);
   },
   checkDocker: () => ipcRenderer.invoke('checkDocker'),
+  checkQ8SCtl: () => ipcRenderer.invoke('checkQ8SCtl'),
   /**
    * Sends boolean value to renderer process to check if a docker image exists
    * @param callback

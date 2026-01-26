@@ -22,6 +22,8 @@ release/app/dist
 release/build
 .erb/dll
 
+python-env
+
 .idea
 npm-debug.log.*
 *.css.d.ts

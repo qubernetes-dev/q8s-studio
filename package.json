@@ -174,7 +174,10 @@
     "productName": "QubernetesStudio",
     "appId": "org.torqs.q8sStudio",
     "asar": true,
-    "asarUnpack": "**\\*.{node,dll}",
+    "asarUnpack": [
+      "**\\*.{node,dll}",
+      "python/**"
+    ],
     "files": [
       "dist",
       "node_modules",
@@ -231,7 +234,11 @@
       "output": "release/build"
     },
     "extraResources": [
-      "./assets/**"
+      "./assets/**",
+      {
+        "from": "python-env",
+        "to": "python"
+      }
     ],
     "publish": {
       "provider": "github",

@@ -43,6 +43,39 @@ class AppUpdater {
   }
 }
 
+
+function q8sctlPath() {
+  const base = app.isPackaged
+    ? path.join(process.resourcesPath, 'python')
+    : path.join(__dirname, '../../python-env');
+  console.log(base);
+  return process.platform === "win32"
+    ? path.join(base, "Scripts", "q8sctl.exe")
+    : path.join(base, "bin", "q8sctl");
+}
+
+function runQ8S(args: string[]) {
+  try {
+  const exe = q8sctlPath();
+  console.log(args);
+  const child = spawn(exe, args);
+
+// TODO: Send output to a different place
+  child.stdout?.on('data', (data: Buffer) => {
+    mainWindow?.webContents.send('cli-output', data.toString());
+    console.log(`stdout: ${data.toString()}`);
+  });
+
+  child.stderr?.on('data', (data: Buffer) => {
+    mainWindow?.webContents.send('cli-output', `ERROR: ${data.toString()}`);
+    console.log(`stderr: ${data}`);
+  });
+  return child;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 function renameContainerName(configurationName: string) {
   return configurationName.trim().replaceAll(' ', '_');
 }
@@ -90,6 +123,8 @@ async function runCommand(command: string): Promise<string> {
         mainWindow?.webContents.send('error', error);
         return reject(stderr);
       }
+      // Below for debugging purposes:
+      // mainWindow?.webContents.send('cli-output', stdout);
       return resolve(stdout);
     });
   });
@@ -313,6 +348,32 @@ async function writeFile(fileName: string, content: object) {
 }
 
 /**
+ * Write a file to the user's appData directory. Converts the JS object to YAML string.
+ * @param fileName The name of the file to write
+ * @param content The content to write to the file as
+ * @returns Boolean value to indicate if writing was successful
+ */
+async function saveQ8SProjectFile(workspacePath: string, fileName: string, content: object) {
+  let filePath;
+  try {
+
+    filePath = path.join(workspacePath, 'Q8Sproject');
+    const contentYaml = yaml.dump(content);
+    fs.writeFileSync(filePath, contentYaml); // Throws an error
+    await dialog.showMessageBox(mainWindow!, {
+      message: 'Q8Sproject file saved successfully',
+    });
+    return true;
+  } catch (error) {
+    dialog.showMessageBox(mainWindow!, {
+      message: `Error saving Q8SProjectfile. \n Error message:\n${error}`,
+    });
+    return false;
+  }
+}
+
+
+/**
  * Renames a file in the user's appData directory.
  *
  * @async
@@ -440,8 +501,14 @@ function killAllProcessess(processes: number[], containerName?: string) {
 /* ---------------------------------------
   IPC handlers
  ----------------------------------------*/
+ipcMain.handle('runQ8S', (_event, args = []) => {
+  return runQ8S(args);
+});
 ipcMain.handle('writeFile', (_event, fileName, content) =>
   writeFile(fileName, content),
+);
+ipcMain.handle('saveQ8SProjectFile', (_event, workspacePath, fileName, content) =>
+  saveQ8SProjectFile(workspacePath, fileName, content),
 );
 ipcMain.handle('renameFile', (_event, fileToRename, newFileName) =>
   renameFile(fileToRename, newFileName),
@@ -472,6 +539,56 @@ ipcMain.handle('checkDocker', async () => {
     );
   }
 });
+ipcMain.handle('checkQ8SCtl', async () => {
+  try {
+    await runCommand(`q8sctl --help`);
+  } catch (error) {
+    console.log(`Error q8sctl: ${error}`);
+    const dialogResult = dialog.showMessageBox(mainWindow!, {
+      type: 'question',
+      title: 'Qubernetes Studio needs q8sctl',
+      message:
+        'Qubernetes Studio needs q8s pip package to work properly. Make sure q8sctl is installed on your machine. \nDo you want to automatically install the q8s tool now?',
+      buttons: ['Install q8s', 'Cancel'],
+    });
+    dialogResult.then((result) => {
+      if (result.response === 0) {
+
+          const loadingWin = new BrowserWindow({
+            parent: mainWindow!,
+            modal: true,
+            width: 300,
+            height: 150,
+            frame: false,
+            closable: false,
+            movable: true,
+            resizable: false,
+            alwaysOnTop: true,
+            webPreferences: { nodeIntegration: true, contextIsolation: false, devTools: false },
+          });
+        loadingWin.loadFile('src/renderer/loading.html');
+        runCommand('pip install q8s')
+          .then((res) => {
+            loadingWin.close();
+            dialog.showMessageBox(mainWindow!, {
+              message: `q8sctl installed successfully.`,
+            });
+          })
+          .catch((err) => {
+            loadingWin.close();
+            dialog.showErrorBox(
+              'Error installing q8sctl',
+              `There was an error installing q8sctl:\n${err}\nPlease install it manually by following the instructions at: \nhttps://github.com/torqs-project/q8sctl`,
+            );
+          });
+      }
+    });
+    // dialog.showErrorBox(
+    //   'Qubernetes Studio needs q8sctl to work properly.',
+    //   `Make sure q8sctl is installed on your machine. For installation instructions, visit: \nhttps://github.com/torqs-project/q8sctl`,
+    // );
+  }
+});
 ipcMain.handle('killProcess', (event, configurationName) => {
   killAllProcessess(allChildProcessess, renameContainerName(configurationName));
   return 'All child processes killed';
@@ -485,8 +602,16 @@ ipcMain.handle('getPort', () =>
     .catch((err) => console.log(err)),
 );
 
+ipcMain.handle('runCommand', async (_event, command: string) => {
+  try {
+    await runCommand(command);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 ipcMain.handle(
-  'runCommand',
+  'runDockerCommand',
   async (_event, givenConfigurations: Q8SProject) => {
     const command = 'docker';
     // Change configuration name to a valid docker name

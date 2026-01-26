@@ -41,7 +41,7 @@ export default function ConfigurationTile({
           setNavState('environment');
           setEnvName(projectName);
           window.electronAPI
-            .runCommand(config, portToUse.toString())
+            .runDockerCommand(config, portToUse.toString())
             .then((result: any) => {
               return result;
             })

@@ -126,105 +126,115 @@ export default function ConfigurationView({
       <div className="content">
         <div className="conf-view">
           <div className="inputs">
-            <TextField
-              label="Name"
-              fieldValue={q8sproject.name}
-              autofocus
-              inputName="name"
-              handleChange={handleChange}
-              documentationText={documentationTexts.name.full}
-              shortDescription={documentationTexts.name.short}
-              pattern="^/?([a-zA-Z0-9_ ]+)$" // Pattern to allow letters, spaces and underscores only
-              validationMessage="Name can only contain letters from A-Z,spaces and underscores."
-            />
-            <TextField
-              label="Python Dependencies"
-              fieldValue={q8sproject.python_env.dependencies.join(', ')}
-              inputName="pythonDependencies"
-              documentationText={documentationTexts.pythonEnv.full}
-              shortDescription={documentationTexts.pythonEnv.short}
-              handleChange={(e) => {
-                setQ8sproject({
-                  ...q8sproject,
-                  python_env: {
-                    dependencies: e.target.value
-                      .split(',')
-                      .map((dep: string) => dep.trim()),
-                  },
-                });
-              }}
-            />
-            <TextField
-              label="Docker Username"
-              fieldValue={q8sproject.docker.username}
-              inputName="docker"
-              handleChange={(e) => {
-                setQ8sproject({
-                  ...q8sproject,
-                  docker: {
-                    username: e.target.value,
-                  },
-                });
-              }}
-              documentationText={documentationTexts.dockerUsername.full}
-              shortDescription={documentationTexts.dockerUsername.short}
-              pattern="^/?([a-zA-Z0-9_ ]+)$" // Pattern to allow letters, spaces and underscores only
-              validationMessage="Name can only contain letters from A-Z,spaces and underscores."
-            />
-            <TextField
-              label="CPU Python Dependencies"
-              fieldValue={
-                q8sproject.targets.cpu?.python_env?.dependencies?.join(', ') ||
-                ''
-              }
-              inputName="CPUpythonDependencies"
-              documentationText={documentationTexts.pythonEnv.full}
-              shortDescription={documentationTexts.pythonEnv.short}
-              handleChange={(e) => {
-                setQ8sproject({
-                  ...q8sproject,
-                  targets: {
-                    ...q8sproject.targets,
-                    cpu: {
-                      ...q8sproject.targets.cpu,
-                      python_env: {
-                        dependencies: e.target.value
-                          .split(',')
-                          .map((dep: string) => dep.trim()),
+            <fieldset>
+              <legend>General configuration</legend>
+              <TextField
+                label="Name"
+                fieldValue={q8sproject.name}
+                autofocus
+                inputName="name"
+                handleChange={handleChange}
+                documentationText={documentationTexts.name.full}
+                shortDescription={documentationTexts.name.short}
+                required
+                pattern="^/?([a-zA-Z0-9_ ]+)$" // Pattern to allow letters, spaces and underscores only
+                validationMessage="Name can only contain letters from A-Z,spaces and underscores."
+              />
+              <TextField
+                label="Python Dependencies"
+                fieldValue={q8sproject.python_env.dependencies.join(', ')}
+                inputName="pythonDependencies"
+                documentationText={documentationTexts.pythonEnv.full}
+                shortDescription={documentationTexts.pythonEnv.short}
+                handleChange={(e) => {
+                  setQ8sproject({
+                    ...q8sproject,
+                    python_env: {
+                      dependencies: e.target.value
+                        .split(',')
+                        .map((dep: string) => dep.trim()),
+                    },
+                  });
+                }}
+              />
+              <TextField
+                label="Docker Username"
+                fieldValue={q8sproject.docker.username}
+                inputName="docker"
+                handleChange={(e) => {
+                  setQ8sproject({
+                    ...q8sproject,
+                    docker: {
+                      username: e.target.value,
+                    },
+                  });
+                }}
+                documentationText={documentationTexts.dockerUsername.full}
+                shortDescription={documentationTexts.dockerUsername.short}
+                required
+                pattern="^/?([a-zA-Z0-9_ ]+)$" // Pattern to allow letters, spaces and underscores only
+                validationMessage="Name can only contain letters from A-Z,spaces and underscores."
+              />
+            </fieldset>
+            <fieldset>
+              <legend>Targets configuration</legend>
+
+              <TextField
+                label="CPU Python Dependencies"
+                fieldValue={
+                  q8sproject.targets.cpu?.python_env?.dependencies?.join(
+                    ', ',
+                  ) || ''
+                }
+                inputName="CPUpythonDependencies"
+                documentationText={documentationTexts.pythonEnv.full}
+                shortDescription={documentationTexts.pythonEnv.short}
+                handleChange={(e) => {
+                  setQ8sproject({
+                    ...q8sproject,
+                    targets: {
+                      ...q8sproject.targets,
+                      cpu: {
+                        ...q8sproject.targets.cpu,
+                        python_env: {
+                          dependencies: e.target.value
+                            .split(',')
+                            .map((dep: string) => dep.trim()),
+                        },
                       },
                     },
-                  },
-                });
-              }}
-            />
+                  });
+                }}
+              />
 
-            <TextField
-              label="GPU Python Dependencies"
-              fieldValue={
-                q8sproject.targets.gpu?.python_env?.dependencies?.join(', ') ||
-                ''
-              }
-              inputName="GPUpythonDependencies"
-              documentationText={documentationTexts.pythonEnv.full}
-              shortDescription={documentationTexts.pythonEnv.short}
-              handleChange={(e) => {
-                setQ8sproject({
-                  ...q8sproject,
-                  targets: {
-                    ...q8sproject.targets,
-                    gpu: {
-                      ...q8sproject.targets.gpu,
-                      python_env: {
-                        dependencies: e.target.value
-                          .split(',')
-                          .map((dep: string) => dep.trim()),
+              <TextField
+                label="GPU Python Dependencies"
+                fieldValue={
+                  q8sproject.targets.gpu?.python_env?.dependencies?.join(
+                    ', ',
+                  ) || ''
+                }
+                inputName="GPUpythonDependencies"
+                documentationText={documentationTexts.pythonEnv.full}
+                shortDescription={documentationTexts.pythonEnv.short}
+                handleChange={(e) => {
+                  setQ8sproject({
+                    ...q8sproject,
+                    targets: {
+                      ...q8sproject.targets,
+                      gpu: {
+                        ...q8sproject.targets.gpu,
+                        python_env: {
+                          dependencies: e.target.value
+                            .split(',')
+                            .map((dep: string) => dep.trim()),
+                        },
                       },
                     },
-                  },
-                });
-              }}
-            />
-
+                  });
+                }}
+              />
+            </fieldset>
             <FileButton
               name={kubeconfigName}
               path={q8sproject.kubeconfig}

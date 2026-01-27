@@ -9,6 +9,7 @@ export interface inputFieldProps {
   handleChange: (e) => void;
   documentationText?: string;
   shortDescription?: string;
+  required?: boolean;
   pattern?: string;
   validationMessage?: string;
 }
@@ -24,19 +25,21 @@ export default function TextField({
   inputName: inputType,
   documentationText,
   shortDescription,
+  required,
   pattern,
   validationMessage,
 }: inputFieldProps) {
   return (
     <div className="input-div">
       <label className="text-input" htmlFor={inputType}>
-        <span>{label}</span>
+        <span>{label + (required ? ' *' : '')}</span>
         <input
           // eslint-disable-next-line jsx-a11y/no-autofocus
           autoFocus={autofocus}
           type="text"
           name={inputType}
           value={fieldValue}
+          required={required}
           pattern={pattern}
           maxLength={255}
           onChange={(e) => {
@@ -83,5 +86,6 @@ TextField.defaultProps = {
   documentationText: '',
   shortDescription: '',
   pattern: undefined,
+  required: false,
   validationMessage: 'Invalid input.',
 };

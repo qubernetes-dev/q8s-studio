@@ -21,8 +21,8 @@ export default function FileButton({
   shortDescription,
 }: fileButtonProps) {
   const text = isDirectory
-    ? 'Choose a workspace folder...'
-    : 'Choose a kubernetes configuration file...';
+    ? 'Choose a workspace folder... *'
+    : 'Choose a kubernetes configuration file... *';
   return (
     <div className="input-div">
       <div className="file">

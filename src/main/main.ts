@@ -360,9 +360,9 @@ async function saveQ8SProjectFile(workspacePath: string, fileName: string, conte
     filePath = path.join(workspacePath, 'Q8Sproject');
     const contentYaml = yaml.dump(content);
     fs.writeFileSync(filePath, contentYaml); // Throws an error
-    await dialog.showMessageBox(mainWindow!, {
-      message: 'Q8Sproject file saved successfully',
-    });
+    // await dialog.showMessageBox(mainWindow!, {
+    //   message: 'Q8Sproject file saved successfully',
+    // });
     return true;
   } catch (error) {
     dialog.showMessageBox(mainWindow!, {
@@ -587,6 +587,39 @@ ipcMain.handle('checkQ8SCtl', async () => {
     //   'Qubernetes Studio needs q8sctl to work properly.',
     //   `Make sure q8sctl is installed on your machine. For installation instructions, visit: \nhttps://github.com/torqs-project/q8sctl`,
     // );
+  }
+});
+/** Run q8sct command. For the experiment just hardcoded command
+ * TODO: CPU/GPU selection. Execute python file,
+ */
+ipcMain.handle('runQ8SCtl', async (_event, configurations: Q8SProject) => {
+  let args = ["build", "--init", "--target=cpu", "--no-silent"]
+  const arg = 'init'
+  try {
+    const init = spawn('q8sctl', args, {
+      cwd: configurations.workspacePath,
+      env: {...process.env, NO_COLOR: '1',FORCE_COLOR: '0',NODE_DISABLE_COLORS: '1', TERM: 'dumb'}
+    });
+    init.stdout.on('data', async (msg: Buffer) => {
+
+      mainWindow?.webContents.send('cli-output', `${msg.toString()}`);
+    });
+    mainWindow?.webContents.send('clg', configurations);
+    // const init = exec("q8sctl --help")
+    init.stderr?.on('data', async (msg: Buffer) => {
+      mainWindow?.webContents.send('cli-output', `${msg.toString()}`);
+
+      console.log(`${msg.toString()}`);
+      return `init error ${msg.toString()}`;
+    });
+    init.on('exit', (code) => {
+      if (code == 0) {
+        mainWindow?.webContents.send('cli-output', `Experiment ran succesfully!`);
+      }
+      });
+  } catch (error) {
+    console.log(`Error: ${error}`);
+    return error
   }
 });
 ipcMain.handle('killProcess', (event, configurationName) => {

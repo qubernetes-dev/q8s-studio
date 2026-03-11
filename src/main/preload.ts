@@ -40,6 +40,9 @@ export const electronAPI = {
   runDockerCommand: (configurations: Q8SProject | null, port: string) => {
     return ipcRenderer.invoke('runDockerCommand', configurations, port);
   },
+  runQ8SCtl: (configurations: Q8SProject) => {
+    return ipcRenderer.invoke('runQ8SCtl', configurations)
+  },
   /**
    * Runs the given command in main process as a child process
    * @param configurations the command to run

@@ -41,11 +41,20 @@ export default function ConfigurationTile({
           setNavState('environment');
           setEnvName(projectName);
           window.electronAPI
-            .runDockerCommand(config, portToUse.toString())
+            .runQ8SCtl(config)
             .then((result: any) => {
+              console.log(result);
               return result;
             })
-            .catch(() => {});
+            .catch((e) => {
+              console.log(e);
+            });
+          // window.electronAPI
+          //   .runDockerCommand(config, portToUse.toString())
+          //   .then((result: any) => {
+          //     return result;
+          //   })
+          //   .catch(() => {});
         }}
       >
         <span> {projectName}</span> <img src={runIcon} alt="" />

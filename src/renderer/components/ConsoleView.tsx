@@ -30,6 +30,9 @@ export default function ConsoleView(): React.JSX.Element {
       const newline: React.JSX.Element = <p key={pKey}>{data}</p>;
       setOutput([...output, newline]);
     });
+    window.electronAPI.on('clg', (_event, data) => {
+      console.log(data);
+    });
     window.electronAPI.labUrl((labUrlFromMain: string) => {
       setLabUrl(labUrlFromMain);
     });

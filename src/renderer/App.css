@@ -207,8 +207,9 @@ a:hover {
     font-size: 1.5rem;
   }
 
-  p {
-    margin: 0;
+  pre {
+    margin: 0.5em;
+    font-size: larger;
     padding: 0.5em 0.5em;
   }
 

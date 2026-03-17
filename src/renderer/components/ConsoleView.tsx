@@ -27,7 +27,7 @@ export default function ConsoleView(): React.JSX.Element {
   if (window.electronAPI) {
     window.electronAPI.on('cli-output', (_event, data) => {
       setPKey(pKey + 1);
-      const newline: React.JSX.Element = <p key={pKey}>{data}</p>;
+      const newline: React.JSX.Element = <pre key={pKey}>{data}</pre>;
       setOutput([...output, newline]);
     });
     window.electronAPI.on('clg', (_event, data) => {

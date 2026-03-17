@@ -598,9 +598,12 @@ ipcMain.handle('runQ8SCtl', async (_event, configurations: Q8SProject) => {
   try {
     const init = spawn('q8sctl', args, {
       cwd: configurations.workspacePath,
-      env: {...process.env, NO_COLOR: '1',FORCE_COLOR: '0',NODE_DISABLE_COLORS: '1', TERM: 'dumb'}
+      env: {...process.env, TERM: 'dumb'}
     });
+    mainWindow?.webContents.send('cli-output', `Workspace path: ${configurations.workspacePath}`);
+
     init.stdout.on('data', async (msg: Buffer) => {
+      console.log(msg.toString());
 
       mainWindow?.webContents.send('cli-output', `${msg.toString()}`);
     });

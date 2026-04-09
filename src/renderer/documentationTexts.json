@@ -1,26 +1,26 @@
 {
   "name": {
-    "full": "Project name",
-    "short": "Name"
+    "full": "Project name. This name will be used as the docker container's name too.",
+    "short": "The name for the project"
   },
   "pythonEnv": {
-    "full": "Python environment",
-    "short": "Env"
+    "full": "Add python dependencies for your project. These are general dependencies, and will be used with any target (CPU/GPU/QPU) selected.",
+    "short": "List of the python dependencies "
   },
   "target": {
     "full": "Select the target hardware for your Q8S project. Choose CPU for standard processing, GPU for accelerated computing, or QPU for quantum processing units. Ensure your environment is set up to support the selected target.",
-    "short": "Target"
+    "short": "Select the target"
   },
   "dockerUsername": {
-    "full": "Docker registry username",
+    "full": "Docker registry username. This is used for pushing and pulling the necessary docker images and containers.",
     "short": "Docker User"
   },
   "kubernetesConfig": {
-    "full": "Kubernetes configuration",
-    "short": "K8s Config"
+    "full": "Selected file will be used as the kubeconfig file. This file handles the kubernetes orchestration.",
+    "short": "File for Kubernetes configuration"
   },
   "workspacePath": {
-    "full": "Workspace path",
-    "short": "Path"
+    "full": "Selected directory will be used as the workspace (root directory) for the project.",
+    "short": "Workspace path"
   }
 }

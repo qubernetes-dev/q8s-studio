@@ -137,8 +137,8 @@ export default function ConfigurationView({
                 documentationText={documentationTexts.name.full}
                 shortDescription={documentationTexts.name.short}
                 required
-                pattern="^/?([a-zA-Z0-9_ ]+)$" // Pattern to allow letters, spaces and underscores only
-                validationMessage="Name can only contain letters from A-Z,spaces and underscores."
+                pattern="^/?([a-zA-Z0-9_- ]+)$" // Pattern to allow letters, spaces and underscores dashes only
+                validationMessage="Name can only contain letters from A-Z,spaces, underscores and dashes."
               />
               <TextField
                 label="Python Dependencies"
@@ -172,8 +172,8 @@ export default function ConfigurationView({
                 documentationText={documentationTexts.dockerUsername.full}
                 shortDescription={documentationTexts.dockerUsername.short}
                 required
-                pattern="^/?([a-zA-Z0-9_ ]+)$" // Pattern to allow letters, spaces and underscores only
-                validationMessage="Name can only contain letters from A-Z,spaces and underscores."
+                pattern="^/?([a-zA-Z0-9_]+)$" // Pattern to allow letters, numbers, and underscores only
+                validationMessage="Name can only contain letters from A-Z, numbers and underscores."
               />
             </fieldset>
             <fieldset>
@@ -188,7 +188,7 @@ export default function ConfigurationView({
                 }
                 inputName="CPUpythonDependencies"
                 documentationText={documentationTexts.pythonEnv.full}
-                shortDescription={documentationTexts.pythonEnv.short}
+                shortDescription={`${documentationTexts.pythonEnv.short} for the CPU environment`}
                 handleChange={(e) => {
                   setQ8sproject({
                     ...q8sproject,
@@ -216,7 +216,7 @@ export default function ConfigurationView({
                 }
                 inputName="GPUpythonDependencies"
                 documentationText={documentationTexts.pythonEnv.full}
-                shortDescription={documentationTexts.pythonEnv.short}
+                shortDescription={`${documentationTexts.pythonEnv.short} for the GPU environment`}
                 handleChange={(e) => {
                   setQ8sproject({
                     ...q8sproject,

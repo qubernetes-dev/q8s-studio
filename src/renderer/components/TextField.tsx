@@ -75,8 +75,8 @@ export default function TextField({
         />
       </label>
       <InfoButton
-        documentationText=""
-        shortDescription={`Enter the ${label.toLowerCase()}. ${validationMessage}`}
+        documentationText={documentationText}
+        shortDescription={`${shortDescription}`}
       />
     </div>
   );

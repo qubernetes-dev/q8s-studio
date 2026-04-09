@@ -593,4 +593,30 @@ button, .tile {
     border-bottom: 3px solid rgb(255, 255, 255);
   }
 
+
+
+}
+#position{
+  position: relative;
+}
+[role="tooltip"] {
+
+  position: absolute;
+  background: black;
+  color: white;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  /* Give some time before hiding so mouse can exit the input
+  and enter the tooltip */
+  transition: visibility 0.5s;
+  min-width: 30vw;
+}
+[aria-describedby]:focus {
+  position: relative;
+}
+[aria-describedby]:active + [role="tooltip"],
+[aria-describedby]:focus + [role="tooltip"],
+[role="tooltip"]:active,
+[role="tooltip"]:focus {
+  visibility: visible;
 }

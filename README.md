@@ -1,6 +1,15 @@
-# Qubernetes Studio (q8s-studio)
-This is a simple GUI app for facilitating Kubernetes cluster running and management. 
+# Qubernetes Studio (q8s-studio) EXPERIMENT VERSION
+> [!IMPORTANT]
+This branch is the version of the app which was used on the user study conducted for thesis work. 
 
+
+
+
+> [!WARNING]
+> There are some hardcoded parts, which were added to fit the experiment.
+
+--- 
+Qubernetes Studio is a simple GUI app for facilitating Kubernetes cluster running and management.
 ## Features
 - Create and manage Kubernetes kluster configurations
 - Run saved configurations easily

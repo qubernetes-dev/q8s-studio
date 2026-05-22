@@ -1,0 +1,18 @@
+[Desktop Entry]
+Comment[en_US]=Run experiment applications
+Comment=Run experiment applications
+Exec=/home/edciriac/Documents/scriptit/start_qubernetes.sh
+GenericName[en_US]=Experiment
+GenericName=Experiment
+Icon=/home/edciriac/Downloads/q8s-studio-1.2.0/assets/icons/512x512.png
+MimeType=
+Name[en_US]=Qubernetes Studio
+Name=Qubernetes Studio
+Path=
+StartupNotify=true
+Terminal=true
+TerminalOptions=quiet
+Type=Application
+X-KDE-AutostartScript=true
+X-KDE-SubstituteUID=false
+X-KDE-Username=

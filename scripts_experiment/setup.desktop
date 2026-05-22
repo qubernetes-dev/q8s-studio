@@ -1,0 +1,18 @@
+[Desktop Entry]
+Comment[en_US]=Run experiment applications
+Comment=Run experiment applications
+Exec=/home/edciriac/Documents/scriptit/start_exp_cli.sh
+GenericName[en_US]=Experiment
+GenericName=Experiment
+Icon=utilities-terminal
+MimeType=
+Name[en_US]=Command Line Interface
+Name=Command Line Interface
+Path=
+StartupNotify=true
+Terminal=true
+TerminalOptions=
+Type=Application
+X-KDE-AutostartScript=true
+X-KDE-SubstituteUID=false
+X-KDE-Username=

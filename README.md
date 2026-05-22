@@ -1,16 +1,19 @@
-# Qubernetes Studio (q8s-studio) EXPERIMENT VERSION
+# Qubernetes Studio (q8s-studio) EXPERIMENT (USER STUDY) VERSION
 > [!IMPORTANT]
 This branch is the version of the app which was used on the user study conducted for thesis work. 
-
-
-
 
 > [!WARNING]
 > There are some hardcoded parts, which were added to fit the experiment.
 
---- 
-Qubernetes Studio is a simple GUI app for facilitating Kubernetes cluster running and management.
+## Experiment setup
+
+To keep the procedure for the user study consistent across participant, two desktop shortcuts were created, which start the scripts for the GUI and CLI. The scripts in the folder [`/scripts_experiment`](/scripts_experiment/)
+
+
+
+
 ## Features
+Qubernetes Studio is a simple GUI app for facilitating Kubernetes cluster running and management.
 - Create and manage Kubernetes kluster configurations
 - Run saved configurations easily
 - Get information of the running container in app
